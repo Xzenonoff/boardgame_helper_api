@@ -1,8 +1,8 @@
 version: "3.7"
 volumes:
   game_helper_db:
-  static_value:
-  media_value:
+  static_volume:
+  media_volume:
 
 services:
   game_helper_db:
@@ -19,11 +19,19 @@ services:
     build: .
     restart: always
     volumes:
-      - static_value:/app/static/
-      - media_value:/app/media/
+      - static_volume:/app/static/
+      - media_volume:/app/media/
     depends_on:
       - game_helper_db
     env_file:
       - .env
+
+  nginx:
+    build: ./nginx-local
+    volumes:
+      - static_volume:/app/static
     ports:
-      - "8000:8000"
+      - 8800:8800
+    depends_on:
+      - backend
+    restart: always
