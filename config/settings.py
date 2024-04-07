@@ -9,8 +9,11 @@ SECRET_KEY = "django-insecure-i^mhqjvxesrjtuo5az@@@rmq_65&wjx75!4)0e9i8*$am+92&h
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
-CORS_ALLOW_ALL_ORIGINS = True
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default=['*'])
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8800",
+    "http://127.0.0.1:8800",
+]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -38,8 +41,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "config.urls"
-STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 TEMPLATES = [
     {
@@ -94,7 +95,8 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -115,3 +117,5 @@ REST_FRAMEWORK = {
     'DATE_FORMAT': "%d.%m.%Y",
     'DATE_INPUT_FORMATS': ["%d.%m.%Y", ],
 }
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_URLS_REGEX = r'^/api/.*$'
