@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -11,8 +12,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default=['*'])
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:8800",
-    "http://127.0.0.1:8800",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://backend:8000",
 ]
 
 INSTALLED_APPS = [
@@ -27,6 +29,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "djoser",
     "drf_yasg",
+    "django_filters",
 ]
 
 MIDDLEWARE = [
@@ -106,6 +109,7 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
@@ -117,5 +121,21 @@ REST_FRAMEWORK = {
     'DATE_FORMAT': "%d.%m.%Y",
     'DATE_INPUT_FORMATS': ["%d.%m.%Y", ],
 }
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=100),
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}
+
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_URLS_REGEX = r'^/api/.*$'
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+        }
+    }
+}
