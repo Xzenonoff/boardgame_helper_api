@@ -19,6 +19,8 @@ drf-yasg = "^1.21.7"
 django-filter = "^24.2"
 gunicorn = "^21.2.0"
 django-cors-headers = "^4.3.1"
+nanoid = "^2.0.0"
+dropbox = "^11.36.2"
 
 
 [build-system]

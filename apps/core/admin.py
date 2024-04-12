@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.core.models import Category, Game, Session, Rule
+from apps.core.models import Category, Game, Session, Rule, File
 
 
 @admin.register(Category)
@@ -39,6 +39,19 @@ class RuleAdmin(admin.ModelAdmin):
         'name',
         'description',
         'game',
+    ]
+    list_filter = ['name']
+    search_fields = ['name']
+
+
+@admin.register(File)
+class FileAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'name',
+        'file',
+        'created_at',
+        'updated_at',
     ]
     list_filter = ['name']
     search_fields = ['name']

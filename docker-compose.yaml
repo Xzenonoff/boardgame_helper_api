@@ -11,7 +11,7 @@ services:
     volumes:
       - game_helper_db:/var/lib/postgresql/data/
     env_file:
-        - .env
+        - .env.docker
     ports:
       - "5432:5432"
 
@@ -24,14 +24,14 @@ services:
     depends_on:
       - game_helper_db
     env_file:
-      - .env
+      - .env.docker
 
   nginx:
     build: ./nginx-local
     volumes:
       - static_volume:/app/static
     ports:
-      - "8800:8800"
+      - "8000:8000"
     depends_on:
       - backend
     restart: always
