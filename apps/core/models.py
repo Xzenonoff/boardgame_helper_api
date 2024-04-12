@@ -1,18 +1,20 @@
 import os
+import uuid
 
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils import timezone
 from nanoid import generate
 
-
 User = get_user_model()
 
-DROPBOX_TOKEN = os.getenv('DROPBOX_TOKEN')
+DROPBOX_TOKEN = os.getenv("DROPBOX_TOKEN")
 
 
 def generate_nanoid():
-    return generate('_-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', size=20)
+    return generate(
+        "_-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", size=20
+    )
 
 
 class File(models.Model):
@@ -21,7 +23,7 @@ class File(models.Model):
         primary_key=True,
         default=generate_nanoid,
         editable=False,
-        unique=True
+        unique=True,
     )
     name = models.CharField(max_length=1000)
     slug = models.SlugField(max_length=1000, blank=True, null=True)
@@ -30,21 +32,17 @@ class File(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
 
-    def delete_from_dropbox(self):
-        try:
-            self.dropbox_client.files_delete_v2(self.dropbox_path)
-            self.dropbox_path = None
-            self.save(update_fields=['dropbox_path'])
-            return True
-        except Exception as e:
-            print(f"Error deleting file from Dropbox: {e}")
-            return False
+    def __str__(self):
+        return f"{self.file}"
 
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.name}"
 
 
 class Game(models.Model):
@@ -55,13 +53,24 @@ class Game(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
 
+    def __str__(self):
+        return f"{self.name}"
+
 
 class Session(models.Model):
-    game = models.ForeignKey(Game, on_delete=models.PROTECT, verbose_name='game', related_name='games')
-    user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='user', related_name='users')
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    game = models.ForeignKey(
+        Game, on_delete=models.PROTECT, verbose_name="game", related_name="games"
+    )
+    user = models.ForeignKey(
+        User, on_delete=models.PROTECT, verbose_name="user", related_name="users"
+    )
     progress_info = models.JSONField()
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.game.name}:{self.id}"
 
 
 class Rule(models.Model):
@@ -72,3 +81,6 @@ class Rule(models.Model):
 
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.name} - {self.game.name}"

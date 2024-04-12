@@ -5,14 +5,16 @@ from django.utils.text import slugify
 
 from apps.core.models import File
 
-DROPBOX_TOKEN = os.getenv('DROPBOX_TOKEN')
+DROPBOX_TOKEN = os.getenv("DROPBOX_TOKEN")
 
 
 def create_file(file):
     try:
         dbx = dropbox.Dropbox(DROPBOX_TOKEN)
-        dbx.files_upload(file.read(), f'/{file.name}')
-        file = File.objects.create(name=file.name, slug=slugify(file.name), file=f"/{file.name}")
+        dbx.files_upload(file.read(), f"/{file.name}")
+        file = File.objects.create(
+            name=file.name, slug=slugify(file.name), file=f"/{file.name}"
+        )
 
     except dropbox.exceptions.ApiError as e:
         print(f"Error uploading file to Dropbox: {e}")
