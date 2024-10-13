@@ -18,6 +18,7 @@ class UserViewSet(viewsets.ModelViewSet):
     search_fields = ["username"]
     ordering = ["id"]
     pagination_class = LimitPageNumberPagination
+    
 
     def get_serializer_class(self):
         return UserSerializer
